@@ -12,9 +12,14 @@ class StoriesController < ApplicationController
 
   def create
     @story = current_user.stories.new(story_params)
+    @story.status = 'published' if params[:publish]
 
     if @story.save
-      redirect_to stories_path, notice: '新增成功'
+      if params[:publish]
+        redirect_to stories_path, notice: '已成功發佈故事'
+      else
+        redirect_to edit_story_path(@story), notice: '故事已儲存'
+      end
     else
       render :new
     end
@@ -25,15 +30,30 @@ class StoriesController < ApplicationController
 
   def update
     if @story.update(story_params)
-      redirect_to stories_path, notice: '故事更新成功'
+
+      case
+      when params[:publish]
+        @story.publish!
+        redirect_to stories_path, notice: '故事已發佈'
+      when params[:unpublish]
+        @story.unpublish!
+        redirect_to stories_path, notice: '故事已下架'
+      else
+        redirect_to edit_story_path(@story), notice: '故事已儲存'
+      end
     else
       render :edit
     end
   end
 
+  def destroy
+    @story.destroy
+    redirect_to stories_path, notice: '故事已刪除'
+  end
+
   private
   def find_story
-    @story = current_user.stories.find(params[:id])
+    @story = current_user.stories.friendly.find(params[:id])
   end
 
   def story_params
