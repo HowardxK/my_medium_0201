@@ -82,7 +82,7 @@
             <div class="media-content">
               <h2 class="title is-4"><%= link_to story.title, story_page_path(story.user.username, story), class: 'has-text-grey-dark' %></h2>
               <!-- truncate undefied method 1.19-->
-              <p class="content"><%= strip_tags(story.content) %></p>
+              <p class="content"><%= strip_tags(story.content).truncate(22) %></p>
               <!-- truncate undefied method 1.19-->
               <footer>
                 <p>
