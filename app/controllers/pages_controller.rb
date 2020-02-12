@@ -10,7 +10,8 @@ class PagesController < ApplicationController
   end
   
   def show
-    @story = Story.friendly.find(params[:story_id])
+    @comment = @story.comments.new
+    @comments = @story.comments.order(id: :desc)
   end
 
   def user

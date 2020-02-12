@@ -2,8 +2,19 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
+
+  resources :users, only: [] do
+    member do
+      post :follow
+    end
+  end
   
-  resources :stories
+  resources :stories do
+    member do
+      post :clap
+    end
+    resources :comments, only: [:create]
+  end
 
   # /@howhow/文章標題-123
   get '@:username/:story_id', to: 'pages#show', as: 'story_page'

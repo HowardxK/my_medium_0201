@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_09_031123) do
+ActiveRecord::Schema.define(version: 2020_02_12_025634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,27 @@ ActiveRecord::Schema.define(version: 2020_02_09_031123) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "story_id"
+    t.text "content"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_comments_on_deleted_at"
+    t.index ["story_id"], name: "index_comments_on_story_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "following_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["following_id"], name: "index_follows_on_following_id"
+    t.index ["user_id"], name: "index_follows_on_user_id"
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
@@ -56,6 +77,7 @@ ActiveRecord::Schema.define(version: 2020_02_09_031123) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "slug"
+    t.integer "clap", default: 0
     t.index ["deleted_at"], name: "index_stories_on_deleted_at"
     t.index ["slug"], name: "index_stories_on_slug", unique: true
     t.index ["user_id"], name: "index_stories_on_user_id"
@@ -77,5 +99,8 @@ ActiveRecord::Schema.define(version: 2020_02_09_031123) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "stories"
+  add_foreign_key "comments", "users"
+  add_foreign_key "follows", "users"
   add_foreign_key "stories", "users"
 end
