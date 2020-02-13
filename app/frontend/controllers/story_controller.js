@@ -10,7 +10,7 @@ export default class extends Controller {
     let target = this.clapCountTarget
 
     // /stories/:id/clap
-    axios.post(`/stories/${slug}/clap`)
+    axios.post(`/api/stories/${slug}/clap`)
          .then(function(response){
            let status = response.data.status
            switch (status) {
